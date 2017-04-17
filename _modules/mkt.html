@@ -1,0 +1,635 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mkt &mdash; Mann-Kendall Test 1.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Mann-Kendall Test 1.0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Mann-Kendall Test
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Mann-Kendall Test</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>mkt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mkt</h1><div class="highlight"><pre>
+<span></span><span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">Python module to compute the Mann-Kendall test for trend in time series data.</span>
+
+<span class="sd">This module contains a single function &#39;test&#39; which implements the Mann-Kendall</span>
+<span class="sd">test for a linear trend in a given time series. </span>
+
+<span class="sd">Introduction to the Mann-Kendall test</span>
+<span class="sd">-------------------------------------</span>
+
+<span class="sd">The Mann-Kendall test is used to determine whether or not there is a linear</span>
+<span class="sd">monotonic trend in a given time series data. It is a non-parametric trend</span>
+<span class="sd">closely related to the concept of Kendall&#39;s correlation coefficient [1]_. The</span>
+<span class="sd">null hypothesis, :math:`H_0`, states that there is no monotonic trend, and this</span>
+<span class="sd">is tested against one of three possible alternative hypotheses, :math:`H_a`:</span>
+<span class="sd">(i) there is an upward monotonic trend, (ii) there is a downward monotonic</span>
+<span class="sd">trend, or (iii) there is either an upward monotonic trend or a downward</span>
+<span class="sd">monotonic trend. It is a robust test for trend detection used widely in</span>
+<span class="sd">financial, climatological, hydrological, and environmental time series</span>
+<span class="sd">analysis.</span>
+
+<span class="sd">Assumptions underlying the Mann-Kendall test</span>
+<span class="sd">--------------------------------------------</span>
+
+<span class="sd">The Mann-Kendall test involves the following assumptions [2]_ regarding the </span>
+<span class="sd">given time series data:</span>
+
+<span class="sd">    1. In the absence of a trend, the data are independently and identically</span>
+<span class="sd">    distributed (iid).</span>
+
+<span class="sd">    2. The measurements represent the true states of the observables at the</span>
+<span class="sd">    times of measurements.</span>
+
+<span class="sd">    3. The methods used for sample collection, instrumental measurements and</span>
+<span class="sd">    data handling are unbiased.</span>
+
+<span class="sd">Advantages of the Mann-Kendall test</span>
+<span class="sd">-----------------------------------</span>
+
+<span class="sd">The Mann-Kendall test provides the following advantages:</span>
+
+<span class="sd">    1. It does not assume the data to be distributed according to any</span>
+<span class="sd">    particular rule, i.e., e.g., it does not require that the data be normally</span>
+<span class="sd">    distributed.</span>
+
+<span class="sd">    2. It is not effected by missing data other than the fact the number of</span>
+<span class="sd">    sample points are reduced and hence might effect the statistical</span>
+<span class="sd">    significance adversely.</span>
+
+<span class="sd">    3. It is not effected by irregular spacing of the time points of</span>
+<span class="sd">    measurement.</span>
+<span class="sd">    </span>
+<span class="sd">    4. It is not effected by the length of the time series.</span>
+
+<span class="sd">Limitations of the Mann-Kendall test</span>
+<span class="sd">------------------------------------</span>
+
+<span class="sd">The following limitations have to be kept in mind:</span>
+<span class="sd">    1. The Mann-Kendall test is not suited for data with periodicities (i.e.,</span>
+<span class="sd">    seasonal effects). In order for the test to be effective, it is recommended</span>
+<span class="sd">    that all known periodic effects be removed from the data in a preprocessing</span>
+<span class="sd">    step before computing the Mann-Kendall test.</span>
+
+<span class="sd">    2. The Mann-Kendall test tends to give more negative results for shorter</span>
+<span class="sd">    datasets, i.e., the longer the time series the more effective is the trend</span>
+<span class="sd">    detection computation. </span>
+
+<span class="sd">Formulae</span>
+<span class="sd">--------</span>
+
+<span class="sd">The first step in the Mann-Kendall test for a time series :math:`x_1, x_2,</span>
+<span class="sd">\dots, x_n` of length :math:`n` is to compute the indicator function</span>
+<span class="sd">:math:`sgn(x_i - x_j)` such that:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        sgn(x_i - x_j) &amp;= </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                            1,  &amp; x_i - x_j &gt; 0\\</span>
+<span class="sd">                            0,  &amp; x_i - x_j = 0\\</span>
+<span class="sd">                            -1, &amp; x_i - x_j &lt; 0</span>
+<span class="sd">            \end{cases},</span>
+
+<span class="sd">which tells us whether the difference between the measurements at time</span>
+<span class="sd">:math:`i` and :math:`j` are positive, negative or zero.</span>
+
+<span class="sd">Next, we compute the mean and variance of the above quantity. The mean</span>
+<span class="sd">:math:`E[S]` is given by:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        E[S] = \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} sgn(x_i - x_j),</span>
+
+<span class="sd">and the variance :math:`VAR(S)` is given by:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        VAR(S) = \frac{1}{18} \Big( n(n-1)(2n+5) - \sum_{k=1}^p</span>
+<span class="sd">        q_k(q_k-1)(2q_k+5) \Big),</span>
+
+<span class="sd">where :math:`p` is the total number of tie groups in the data, and :math:`q_k`</span>
+<span class="sd">is the number of data points contained in the :math:`k`-th tie group. For</span>
+<span class="sd">example, if the time series measurements were {12, 56, 23, 12, 67, 45, 56, 56,</span>
+<span class="sd">10}, we would have two tie groups for the measurements 12 and 56, i.e.</span>
+<span class="sd">:math:`p=2`, and the number of data points in these tie groups would</span>
+<span class="sd">:math:`q_1=2` for the tie group with {12}, and :math:`q_2=3` for the tie group</span>
+<span class="sd">with {56}.</span>
+
+<span class="sd">Using the mean :math:`E[S]` and the variance :math:`VAR(S)` we compute the</span>
+<span class="sd">Mann-Kendall test statistic, using the following transformation, which ensures</span>
+<span class="sd">that for large sample sizes, the test statistic :math:`Z_{MK}` is distributed</span>
+<span class="sd">approximately normally:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        Z_{MK} &amp;= </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                            \frac{E[S] - 1} {\sqrt{VAR(S)}},  &amp; E[S] &gt; 0\\</span>
+<span class="sd">                            0,  &amp; E[S] = 0\\</span>
+<span class="sd">                            \frac{E[S] + 1} {\sqrt{VAR(S)}},  &amp; E[S] &lt; 0\\</span>
+<span class="sd">            \end{cases}.</span>
+
+
+<span class="sd">Hypothesis testing</span>
+<span class="sd">------------------</span>
+
+<span class="sd">At a significance level :math:`\alpha` of the test, which is also the Type I</span>
+<span class="sd">error rate, we compute whether or not to accept the alternative hypothesis </span>
+<span class="sd">:math:`H_a` for each variant of :math:`H_a` separately:</span>
+
+<span class="sd">    :math:`H_a`: There exists an upward monotonic trend</span>
+<span class="sd">        If :math:`Z_{MK} \geq Z_{1 - \alpha}` then accept :math:`H_a`, where the</span>
+<span class="sd">        notation :math:`Z_{1 - \alpha}` denotes the :math:`100(1-\alpha)`-th</span>
+<span class="sd">        percentile of the standard normal distribution.</span>
+
+<span class="sd">    :math:`H_a`: There exists a downward monotonic trend</span>
+<span class="sd">        If :math:`Z_{MK} \leq -Z_{1 - \alpha}` then accept :math:`H_a`.</span>
+
+<span class="sd">    :math:`H_a`: There exists either an upward or a downward monotonic trend</span>
+<span class="sd">        If :math:`|Z_{MK}| \geq Z_{1 - \alpha/2}` then accept :math:`H_a`,</span>
+<span class="sd">        where the notation :math:`|\cdot|` is used to denote the absolute</span>
+<span class="sd">        value function.</span>
+
+<span class="sd">Updated formulae for implementation</span>
+<span class="sd">-----------------------------------</span>
+
+<span class="sd">One crucial notion involved in the Mann-Kendall test statistic is that of</span>
+<span class="sd">whether the difference between two measurements is greater than, equal to, or</span>
+<span class="sd">less than zero. This idea is in turn critically linked to the least count</span>
+<span class="sd">(i.e., the minimum possible measurement value) of the time series measurements</span>
+<span class="sd">:math:`x_i`. For example, let us consider the case when we measure :math:`x_i`</span>
+<span class="sd">with a precision :math:`\varepsilon = 0.01`. In such a case, let us say for </span>
+<span class="sd">some reason, floating point errors in the entries of :math:`x_i` in the</span>
+<span class="sd">memory, lead to a :math:`x_{11} - x_{27} = 0.000251 &gt; 0`. However, to say that</span>
+<span class="sd">this difference is actually greater than zero is meaningless! This is because</span>
+<span class="sd">on the basis of the same measurement process we used on :math:`x`, we could</span>
+<span class="sd">never ascertain such a small difference. This is why, in this implementation of</span>
+<span class="sd">the Mann-Kendall test, we have included the least count error</span>
+<span class="sd">:math:`\varepsilon` as a compulsory requirement for the test statistic</span>
+<span class="sd">estimation.</span>
+
+<span class="sd">This allows us to revise the above formulae fo rthe Mann-Kendall test as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        sgn(x_i - x_j) &amp;= </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                            1,  &amp; x_i - x_j &gt; \varepsilon\\</span>
+<span class="sd">                            0,  &amp; |x_i - x_j| \leq \varepsilon\\</span>
+<span class="sd">                            -1, &amp; x_i - x_j &lt; -\varepsilon</span>
+<span class="sd">            \end{cases},</span>
+
+<span class="sd">and:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        Z_{MK} &amp;= </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                            \frac{E[S] - 1} {\sqrt{VAR(S)}},  &amp; E[S] &gt;</span>
+<span class="sd">                            \varepsilon\\</span>
+<span class="sd">                            0,  &amp; |E[S]| \leq \varepsilon\\</span>
+<span class="sd">                            \frac{E[S] + 1} {\sqrt{VAR(S)}},  &amp; E[S] &lt;</span>
+<span class="sd">                            -\varepsilon\\</span>
+<span class="sd">            \end{cases}.</span>
+
+<span class="sd">These revised formulae are the ones that are implemented in the :py:func:`test`</span>
+<span class="sd">of this module.</span>
+
+<span class="sd">Additional estimates</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">In addition to the result of the Mann-Kendall test, which is in the form of a</span>
+<span class="sd">string indicating whether or not to accept the alternative hypothesis, the</span>
+<span class="sd">:py:func:`test` function also return a few additional estimates related to the</span>
+<span class="sd">estimation of a monotonic trend in the time series.</span>
+
+<span class="sd">Estimation of the simple linear regression parameters</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The slope :math:`m` and intercept :math:`c` of a straight line fitted through</span>
+<span class="sd">the time series data are estimated as follows:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        m = r_{x,t} \frac{\sigma_x}{\sigma_t},</span>
+
+<span class="sd">where r_{x,t} is the Pearson&#39;s cross-correlation coefficient between</span>
+<span class="sd">:math:`x` and :math:`t`.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        c = \mu_x - m \mu_t</span>
+
+<span class="sd">where :math:`\mu` denotes the mean of the both variables respectively.</span>
+
+<span class="sd">Estimation of :math:`p`-values</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The :py:func:`test` function also returns the :math:`p`-values for the given </span>
+<span class="sd">dataset under the various alternative hypotheses. Note that the estimation of</span>
+<span class="sd">the :math:`p`-value is not essential to the computation of the test results as</span>
+<span class="sd">formulated above. The :math:`p`-values need to estimated separately depending</span>
+<span class="sd">on the type of alternative hypothesis used and the sign of :math:`E[S]`.</span>
+<span class="sd">Denoting :math:`f(u)` as the probability density function of the standard</span>
+<span class="sd">normal distribution, we can write down the :math:`p`-values as:</span>
+
+<span class="sd">    :math:`H_a`: There exists an upward monotonic trend</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p_{Z_{MK}} &amp;= </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                \int_{Z_{MK}}^{\infty} f(u) \mathrm{d}u,&amp; |E[S]|&gt;\varepsilon\\</span>
+<span class="sd">                0.5,  &amp; |E[S]| \leq \varepsilon\\</span>
+<span class="sd">            \end{cases}.</span>
+
+<span class="sd">    :math:`H_a`: There exists a downward monotonic trend</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p_{Z_{MK}} &amp;= </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                \int^{Z_{MK}}_{-\infty} f(u) \mathrm{d}u,&amp; |E[S]|&gt;\varepsilon\\</span>
+<span class="sd">                0.5,  &amp; |E[S]| \leq \varepsilon\\</span>
+<span class="sd">            \end{cases}.</span>
+
+<span class="sd">    :math:`H_a`: There exists either an upward or a downward monotonic trend</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        p_{Z_{MK}} &amp;= 0.5 </span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                \int_{Z_{MK}}^{\infty} f(u) \mathrm{d}u,&amp; E[S]&gt;\varepsilon\\</span>
+<span class="sd">                1,  &amp; |E[S]| \leq \varepsilon\\</span>
+<span class="sd">                \int^{Z_{MK}}_{-\infty} f(u) \mathrm{d}u,&amp; E[S]&lt;-\varepsilon\\</span>
+<span class="sd">            \end{cases}.</span>
+
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">.. [1]  | Pohlert, T.</span>
+<span class="sd">        | &quot;Non-Parametric Trend Tests and Change-Point Detection&quot;.</span>
+<span class="sd">        | R-package `trend`. Accessed on: 17 April, 2017.</span>
+<span class="sd">        | https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf</span>
+
+<span class="sd">.. [2]  | &quot;Mann-Kendall Test For Monotonic Trend&quot;.</span>
+<span class="sd">        | Visual Simple Plan. Accessed on: 17 April, 2017.</span>
+<span class="sd">        | http://vsp.pnnl.gov/help/Vsample/Design_Trend_Mann_Kendall.htm</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Created: Mon Apr 17, 2017  01:18PM</span>
+<span class="c1"># Last modified: Mon Apr 17, 2017  09:15PM</span>
+<span class="c1"># Copyright: Bedartha Goswami &lt;goswami@uni-potsdam.de&gt;</span>
+
+    <span class="c1"># The p-values are:</span>
+
+    <span class="c1">#     .. math::</span>
+
+    <span class="c1">#         p &amp;= </span>
+    <span class="c1">#             \begin{cases}</span>
+    <span class="c1">#                 \int_{Z_{MK}^{\\infty} f(u) \mathbf{d}u,&amp; E[S] &gt; \varepsilon\\</span>
+    <span class="c1">#                 0.5,  &amp; |E[S]| \leq \varepsilon\\</span>
+    <span class="c1">#                 \int^{Z_{MK}_{-\\infty} f(u) \mathbf{d}u,&amp; E[S] &lt; -\varepsilon\\</span>
+    <span class="c1">#             \end{cases}.</span>
+
+
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">ndtri</span><span class="p">,</span> <span class="n">ndtr</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../index.html#mkt.test">[docs]</a><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">Ha</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs the Mann-Kendall test for trend in time series data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : 1D numpy.ndarray</span>
+<span class="sd">        array of the time points of measurements</span>
+<span class="sd">    x : 1D numpy.ndarray</span>
+<span class="sd">        array containing the measurements corresponding to entries of &#39;t&#39;</span>
+<span class="sd">    eps : scalar, float, greater than zero</span>
+<span class="sd">        least count error of measurements which help determine ties in the data</span>
+<span class="sd">    alpha : scalar, float, greater than zero</span>
+<span class="sd">        significance level of the statistical test (Type I error)</span>
+<span class="sd">    Ha : string, options include &#39;up&#39;, &#39;down&#39;, &#39;upordown&#39;</span>
+<span class="sd">        type of test: one-sided (&#39;up&#39; or &#39;down&#39;) or two-sided (&#39;updown&#39;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    MK : string</span>
+<span class="sd">        result of the statistical test indicating whether or not to accept hte</span>
+<span class="sd">        alternative hypothesis &#39;Ha&#39;</span>
+<span class="sd">    m : scalar, float</span>
+<span class="sd">        slope of the linear fit to the data</span>
+<span class="sd">    c : scalar, float</span>
+<span class="sd">        intercept of the linear fit to the data</span>
+<span class="sd">    p : scalar, float, greater than zero</span>
+<span class="sd">        p-value of the obtained Z-score statistic for the Mann-Kendall test</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError:</span>
+<span class="sd">        when the least count error of measurements &#39;eps&#39; is not given</span>
+<span class="sd">        when significance level of test &#39;alpha&#39; is not given</span>
+<span class="sd">        when type of alternative hypothesis &#39;Ha&#39; is not given</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># assert a least count for the measurements x</span>
+    <span class="k">assert</span> <span class="n">eps</span><span class="p">,</span> <span class="s2">&quot;Please provide least count error for measurements &#39;x&#39;&quot;</span>
+    <span class="k">assert</span> <span class="n">alpha</span><span class="p">,</span> <span class="s2">&quot;Please provide significance level &#39;alpha&#39; for the test&quot;</span>
+    <span class="k">assert</span> <span class="n">Ha</span><span class="p">,</span> <span class="s2">&quot;Please provide the alternative hypothesis &#39;Ha&#39;&quot;</span>
+
+    <span class="c1"># estimate sign of all possible (n(n-1)) / 2 differences</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">sgn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">eps</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">sgn</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+    <span class="c1"># estimate mean of the sign of all possible differences</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">sgn</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="c1"># estimate variance of the sign of all possible differences</span>
+    <span class="c1"># 1. Determine no. of tie groups &#39;p&#39; and no. of ties in each group &#39;q&#39;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">sgn</span><span class="p">,</span> <span class="n">eps</span> <span class="o">*</span> <span class="mf">1E6</span><span class="p">)</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sgn</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="n">ties</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ties</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ties</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">ties</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">q</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="c1"># 2. Determine the two terms in the variance calculation</span>
+    <span class="n">term1</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">term2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">q</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="c1"># 3. estimate variance</span>
+    <span class="n">varS</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">term1</span> <span class="o">-</span> <span class="n">term2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">18.</span>
+
+    <span class="c1"># Compute the Z-score based on above estimated mean and variance</span>
+    <span class="k">if</span> <span class="n">S</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">Zmk</span> <span class="o">=</span> <span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">varS</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">Zmk</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">elif</span> <span class="n">S</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">eps</span><span class="p">:</span>
+        <span class="n">Zmk</span> <span class="o">=</span> <span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">varS</span><span class="p">)</span>
+
+    <span class="c1"># compute test based on given &#39;alpha&#39; and alternative hypothesis</span>
+    <span class="c1"># note: for all the following cases, the null hypothesis Ho is:</span>
+    <span class="c1"># Ho := there is no monotonic trend</span>
+    <span class="c1"># </span>
+    <span class="c1"># Ha := There is an upward monotonic trend</span>
+    <span class="k">if</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+        <span class="n">Z_</span> <span class="o">=</span> <span class="n">ndtri</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Zmk</span> <span class="o">&gt;=</span> <span class="n">Z_</span><span class="p">:</span>
+            <span class="n">MK</span> <span class="o">=</span> <span class="s2">&quot;accept Ha := upward trend&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">MK</span> <span class="o">=</span> <span class="s2">&quot;reject Ha := upward trend&quot;</span>
+    <span class="c1"># Ha := There is a downward monotonic trend</span>
+    <span class="k">elif</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
+        <span class="n">Z_</span> <span class="o">=</span> <span class="n">ndtri</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Zmk</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">Z_</span><span class="p">:</span>
+            <span class="n">MK</span> <span class="o">=</span> <span class="s2">&quot;accept Ha := downward trend&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">MK</span> <span class="o">=</span> <span class="s2">&quot;reject Ha := downward trend&quot;</span>
+    <span class="c1"># Ha := There is an upward OR downward monotonic trend</span>
+    <span class="k">elif</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;upordown&quot;</span><span class="p">:</span>
+        <span class="n">Z_</span> <span class="o">=</span> <span class="n">ndtri</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">Zmk</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">Z_</span><span class="p">:</span>
+            <span class="n">MK</span> <span class="o">=</span> <span class="s2">&quot;accept Ha := upward OR downward trend&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">MK</span> <span class="o">=</span> <span class="s2">&quot;reject Ha := upward OR downward trend&quot;</span>
+
+    <span class="c1"># ----------</span>
+    <span class="c1"># AS A BONUS</span>
+    <span class="c1"># ----------</span>
+    <span class="c1"># estimate the slope and intercept of the line</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># ----------</span>
+    <span class="c1"># AS A BONUS</span>
+    <span class="c1"># ----------</span>
+    <span class="c1"># estimate the p-value for the obtained Z-score Zmk</span>
+    <span class="k">if</span> <span class="n">S</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">Zmk</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">Zmk</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;upordown&quot;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">Zmk</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">elif</span> <span class="n">S</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">eps</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">Zmk</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">Zmk</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Ha</span> <span class="o">==</span> <span class="s2">&quot;upordown&quot;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ndtr</span><span class="p">(</span><span class="n">Zmk</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">MK</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">p</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Bedartha Goswami.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: ''
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

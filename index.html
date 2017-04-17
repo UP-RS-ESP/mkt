@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mann-Kendall Test (mkt) &mdash; Mann-Kendall Test 1.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Mann-Kendall Test 1.0.1 documentation" href="#"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Mann-Kendall Test
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Mann-Kendall Test (mkt)</a></li>
+<li><a class="reference internal" href="#module-mkt">Overview</a><ul>
+<li><a class="reference internal" href="#introduction-to-the-mann-kendall-test">Introduction to the Mann-Kendall test</a></li>
+<li><a class="reference internal" href="#assumptions-underlying-the-mann-kendall-test">Assumptions underlying the Mann-Kendall test</a></li>
+<li><a class="reference internal" href="#advantages-of-the-mann-kendall-test">Advantages of the Mann-Kendall test</a></li>
+<li><a class="reference internal" href="#limitations-of-the-mann-kendall-test">Limitations of the Mann-Kendall test</a></li>
+<li><a class="reference internal" href="#formulae">Formulae</a></li>
+<li><a class="reference internal" href="#hypothesis-testing">Hypothesis testing</a></li>
+<li><a class="reference internal" href="#updated-formulae-for-implementation">Updated formulae for implementation</a></li>
+<li><a class="reference internal" href="#additional-estimates">Additional estimates</a><ul>
+<li><a class="reference internal" href="#estimation-of-the-simple-linear-regression-parameters">Estimation of the simple linear regression parameters</a></li>
+<li><a class="reference internal" href="#estimation-of-values">Estimation of <span class="math">\(p\)</span>-values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Mann-Kendall Test</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Mann-Kendall Test (mkt)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mann-kendall-test-mkt">
+<h1>Mann-Kendall Test (mkt)<a class="headerlink" href="#mann-kendall-test-mkt" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="module-mkt">
+<span id="overview"></span><h1>Overview<a class="headerlink" href="#module-mkt" title="Permalink to this headline">¶</a></h1>
+<p>Python module to compute the Mann-Kendall test for trend in time series data.</p>
+<p>This module contains a single function &#8216;test&#8217; which implements the Mann-Kendall
+test for a linear trend in a given time series.</p>
+<div class="section" id="introduction-to-the-mann-kendall-test">
+<h2>Introduction to the Mann-Kendall test<a class="headerlink" href="#introduction-to-the-mann-kendall-test" title="Permalink to this headline">¶</a></h2>
+<p>The Mann-Kendall test is used to determine whether or not there is a linear
+monotonic trend in a given time series data. It is a non-parametric trend
+closely related to the concept of Kendall&#8217;s correlation coefficient <a class="footnote-reference" href="#id3" id="id1">[1]</a>. The
+null hypothesis, <span class="math">\(H_0\)</span>, states that there is no monotonic trend, and this
+is tested against one of three possible alternative hypotheses, <span class="math">\(H_a\)</span>:
+(i) there is an upward monotonic trend, (ii) there is a downward monotonic
+trend, or (iii) there is either an upward monotonic trend or a downward
+monotonic trend. It is a robust test for trend detection used widely in
+financial, climatological, hydrological, and environmental time series
+analysis.</p>
+</div>
+<div class="section" id="assumptions-underlying-the-mann-kendall-test">
+<h2>Assumptions underlying the Mann-Kendall test<a class="headerlink" href="#assumptions-underlying-the-mann-kendall-test" title="Permalink to this headline">¶</a></h2>
+<p>The Mann-Kendall test involves the following assumptions <a class="footnote-reference" href="#id4" id="id2">[2]</a> regarding the
+given time series data:</p>
+<blockquote>
+<div><p>1. In the absence of a trend, the data are independently and identically
+distributed (iid).</p>
+<p>2. The measurements represent the true states of the observables at the
+times of measurements.</p>
+<p>3. The methods used for sample collection, instrumental measurements and
+data handling are unbiased.</p>
+</div></blockquote>
+</div>
+<div class="section" id="advantages-of-the-mann-kendall-test">
+<h2>Advantages of the Mann-Kendall test<a class="headerlink" href="#advantages-of-the-mann-kendall-test" title="Permalink to this headline">¶</a></h2>
+<p>The Mann-Kendall test provides the following advantages:</p>
+<blockquote>
+<div><p>1. It does not assume the data to be distributed according to any
+particular rule, i.e., e.g., it does not require that the data be normally
+distributed.</p>
+<p>2. It is not effected by missing data other than the fact the number of
+sample points are reduced and hence might effect the statistical
+significance adversely.</p>
+<p>3. It is not effected by irregular spacing of the time points of
+measurement.</p>
+<ol class="arabic simple" start="4">
+<li>It is not effected by the length of the time series.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="limitations-of-the-mann-kendall-test">
+<h2>Limitations of the Mann-Kendall test<a class="headerlink" href="#limitations-of-the-mann-kendall-test" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>The following limitations have to be kept in mind:</dt>
+<dd><p class="first">1. The Mann-Kendall test is not suited for data with periodicities (i.e.,
+seasonal effects). In order for the test to be effective, it is recommended
+that all known periodic effects be removed from the data in a preprocessing
+step before computing the Mann-Kendall test.</p>
+<p class="last">2. The Mann-Kendall test tends to give more negative results for shorter
+datasets, i.e., the longer the time series the more effective is the trend
+detection computation.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="formulae">
+<h2>Formulae<a class="headerlink" href="#formulae" title="Permalink to this headline">¶</a></h2>
+<p>The first step in the Mann-Kendall test for a time series <span class="math">\(x_1, x_2,
+\dots, x_n\)</span> of length <span class="math">\(n\)</span> is to compute the indicator function
+<span class="math">\(sgn(x_i - x_j)\)</span> such that:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}sgn(x_i - x_j) &amp;=
+    \begin{cases}
+                    1,  &amp; x_i - x_j &gt; 0\\
+                    0,  &amp; x_i - x_j = 0\\
+                    -1, &amp; x_i - x_j &lt; 0
+    \end{cases},\end{split}\]</div>
+</div></blockquote>
+<p>which tells us whether the difference between the measurements at time
+<span class="math">\(i\)</span> and <span class="math">\(j\)</span> are positive, negative or zero.</p>
+<p>Next, we compute the mean and variance of the above quantity. The mean
+<span class="math">\(E[S]\)</span> is given by:</p>
+<blockquote>
+<div><div class="math">
+\[E[S] = \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} sgn(x_i - x_j),\]</div>
+</div></blockquote>
+<p>and the variance <span class="math">\(VAR(S)\)</span> is given by:</p>
+<blockquote>
+<div><div class="math">
+\[VAR(S) = \frac{1}{18} \Big( n(n-1)(2n+5) - \sum_{k=1}^p
+q_k(q_k-1)(2q_k+5) \Big),\]</div>
+</div></blockquote>
+<p>where <span class="math">\(p\)</span> is the total number of tie groups in the data, and <span class="math">\(q_k\)</span>
+is the number of data points contained in the <span class="math">\(k\)</span>-th tie group. For
+example, if the time series measurements were {12, 56, 23, 12, 67, 45, 56, 56,
+10}, we would have two tie groups for the measurements 12 and 56, i.e.
+<span class="math">\(p=2\)</span>, and the number of data points in these tie groups would
+<span class="math">\(q_1=2\)</span> for the tie group with {12}, and <span class="math">\(q_2=3\)</span> for the tie group
+with {56}.</p>
+<p>Using the mean <span class="math">\(E[S]\)</span> and the variance <span class="math">\(VAR(S)\)</span> we compute the
+Mann-Kendall test statistic, using the following transformation, which ensures
+that for large sample sizes, the test statistic <span class="math">\(Z_{MK}\)</span> is distributed
+approximately normally:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}Z_{MK} &amp;=
+    \begin{cases}
+                    \frac{E[S] - 1} {\sqrt{VAR(S)}},  &amp; E[S] &gt; 0\\
+                    0,  &amp; E[S] = 0\\
+                    \frac{E[S] + 1} {\sqrt{VAR(S)}},  &amp; E[S] &lt; 0\\
+    \end{cases}.\end{split}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="hypothesis-testing">
+<h2>Hypothesis testing<a class="headerlink" href="#hypothesis-testing" title="Permalink to this headline">¶</a></h2>
+<p>At a significance level <span class="math">\(\alpha\)</span> of the test, which is also the Type I
+error rate, we compute whether or not to accept the alternative hypothesis
+<span class="math">\(H_a\)</span> for each variant of <span class="math">\(H_a\)</span> separately:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><span class="math">\(H_a\)</span>: There exists an upward monotonic trend</dt>
+<dd>If <span class="math">\(Z_{MK} \geq Z_{1 - \alpha}\)</span> then accept <span class="math">\(H_a\)</span>, where the
+notation <span class="math">\(Z_{1 - \alpha}\)</span> denotes the <span class="math">\(100(1-\alpha)\)</span>-th
+percentile of the standard normal distribution.</dd>
+<dt><span class="math">\(H_a\)</span>: There exists a downward monotonic trend</dt>
+<dd>If <span class="math">\(Z_{MK} \leq -Z_{1 - \alpha}\)</span> then accept <span class="math">\(H_a\)</span>.</dd>
+<dt><span class="math">\(H_a\)</span>: There exists either an upward or a downward monotonic trend</dt>
+<dd>If <span class="math">\(|Z_{MK}| \geq Z_{1 - \alpha/2}\)</span> then accept <span class="math">\(H_a\)</span>,
+where the notation <span class="math">\(|\cdot|\)</span> is used to denote the absolute
+value function.</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="updated-formulae-for-implementation">
+<h2>Updated formulae for implementation<a class="headerlink" href="#updated-formulae-for-implementation" title="Permalink to this headline">¶</a></h2>
+<p>One crucial notion involved in the Mann-Kendall test statistic is that of
+whether the difference between two measurements is greater than, equal to, or
+less than zero. This idea is in turn critically linked to the least count
+(i.e., the minimum possible measurement value) of the time series measurements
+<span class="math">\(x_i\)</span>. For example, let us consider the case when we measure <span class="math">\(x_i\)</span>
+with a precision <span class="math">\(\varepsilon = 0.01\)</span>. In such a case, let us say for
+some reason, floating point errors in the entries of <span class="math">\(x_i\)</span> in the
+memory, lead to a <span class="math">\(x_{11} - x_{27} = 0.000251 &gt; 0\)</span>. However, to say that
+this difference is actually greater than zero is meaningless! This is because
+on the basis of the same measurement process we used on <span class="math">\(x\)</span>, we could
+never ascertain such a small difference. This is why, in this implementation of
+the Mann-Kendall test, we have included the least count error
+<span class="math">\(\varepsilon\)</span> as a compulsory requirement for the test statistic
+estimation.</p>
+<p>This allows us to revise the above formulae fo rthe Mann-Kendall test as:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}sgn(x_i - x_j) &amp;=
+    \begin{cases}
+                    1,  &amp; x_i - x_j &gt; \varepsilon\\
+                    0,  &amp; |x_i - x_j| \leq \varepsilon\\
+                    -1, &amp; x_i - x_j &lt; -\varepsilon
+    \end{cases},\end{split}\]</div>
+</div></blockquote>
+<p>and:</p>
+<blockquote>
+<div><div class="math">
+\[\begin{split}Z_{MK} &amp;=
+    \begin{cases}
+                    \frac{E[S] - 1} {\sqrt{VAR(S)}},  &amp; E[S] &gt;
+                    \varepsilon\\
+                    0,  &amp; |E[S]| \leq \varepsilon\\
+                    \frac{E[S] + 1} {\sqrt{VAR(S)}},  &amp; E[S] &lt;
+                    -\varepsilon\\
+    \end{cases}.\end{split}\]</div>
+</div></blockquote>
+<p>These revised formulae are the ones that are implemented in the <a class="reference internal" href="#mkt.test" title="mkt.test"><code class="xref py py-func docutils literal"><span class="pre">test()</span></code></a>
+of this module.</p>
+</div>
+<div class="section" id="additional-estimates">
+<h2>Additional estimates<a class="headerlink" href="#additional-estimates" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the result of the Mann-Kendall test, which is in the form of a
+string indicating whether or not to accept the alternative hypothesis, the
+<a class="reference internal" href="#mkt.test" title="mkt.test"><code class="xref py py-func docutils literal"><span class="pre">test()</span></code></a> function also return a few additional estimates related to the
+estimation of a monotonic trend in the time series.</p>
+<div class="section" id="estimation-of-the-simple-linear-regression-parameters">
+<h3>Estimation of the simple linear regression parameters<a class="headerlink" href="#estimation-of-the-simple-linear-regression-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The slope <span class="math">\(m\)</span> and intercept <span class="math">\(c\)</span> of a straight line fitted through
+the time series data are estimated as follows:</p>
+<blockquote>
+<div><div class="math">
+\[m = r_{x,t} \frac{\sigma_x}{\sigma_t},\]</div>
+</div></blockquote>
+<p>where r_{x,t} is the Pearson&#8217;s cross-correlation coefficient between
+<span class="math">\(x\)</span> and <span class="math">\(t\)</span>.</p>
+<blockquote>
+<div><div class="math">
+\[c = \mu_x - m \mu_t\]</div>
+</div></blockquote>
+<p>where <span class="math">\(\mu\)</span> denotes the mean of the both variables respectively.</p>
+</div>
+<div class="section" id="estimation-of-values">
+<h3>Estimation of <span class="math">\(p\)</span>-values<a class="headerlink" href="#estimation-of-values" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#mkt.test" title="mkt.test"><code class="xref py py-func docutils literal"><span class="pre">test()</span></code></a> function also returns the <span class="math">\(p\)</span>-values for the given
+dataset under the various alternative hypotheses. Note that the estimation of
+the <span class="math">\(p\)</span>-value is not essential to the computation of the test results as
+formulated above. The <span class="math">\(p\)</span>-values need to estimated separately depending
+on the type of alternative hypothesis used and the sign of <span class="math">\(E[S]\)</span>.
+Denoting <span class="math">\(f(u)\)</span> as the probability density function of the standard
+normal distribution, we can write down the <span class="math">\(p\)</span>-values as:</p>
+<blockquote>
+<div><p><span class="math">\(H_a\)</span>: There exists an upward monotonic trend</p>
+<div class="math">
+\[\begin{split}p_{Z_{MK}} &amp;=
+    \begin{cases}
+        \int_{Z_{MK}}^{\infty} f(u) \mathrm{d}u,&amp; |E[S]|&gt;\varepsilon\\
+        0.5,  &amp; |E[S]| \leq \varepsilon\\
+    \end{cases}.\end{split}\]</div>
+<p><span class="math">\(H_a\)</span>: There exists a downward monotonic trend</p>
+<div class="math">
+\[\begin{split}p_{Z_{MK}} &amp;=
+    \begin{cases}
+        \int^{Z_{MK}}_{-\infty} f(u) \mathrm{d}u,&amp; |E[S]|&gt;\varepsilon\\
+        0.5,  &amp; |E[S]| \leq \varepsilon\\
+    \end{cases}.\end{split}\]</div>
+<p><span class="math">\(H_a\)</span>: There exists either an upward or a downward monotonic trend</p>
+<div class="math">
+\[\begin{split}p_{Z_{MK}} &amp;= 0.5
+    \begin{cases}
+        \int_{Z_{MK}}^{\infty} f(u) \mathrm{d}u,&amp; E[S]&gt;\varepsilon\\
+        1,  &amp; |E[S]| \leq \varepsilon\\
+        \int^{Z_{MK}}_{-\infty} f(u) \mathrm{d}u,&amp; E[S]&lt;-\varepsilon\\
+    \end{cases}.\end{split}\]</div>
+</div></blockquote>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><div class="first last line-block">
+<div class="line">Pohlert, T.</div>
+<div class="line">&#8220;Non-Parametric Trend Tests and Change-Point Detection&#8221;.</div>
+<div class="line">R-package <cite>trend</cite>. Accessed on: 17 April, 2017.</div>
+<div class="line"><a class="reference external" href="https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf">https://cran.r-project.org/web/packages/trend/vignettes/trend.pdf</a></div>
+</div>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><div class="first last line-block">
+<div class="line">&#8220;Mann-Kendall Test For Monotonic Trend&#8221;.</div>
+<div class="line">Visual Simple Plan. Accessed on: 17 April, 2017.</div>
+<div class="line"><a class="reference external" href="http://vsp.pnnl.gov/help/Vsample/Design_Trend_Mann_Kendall.htm">http://vsp.pnnl.gov/help/Vsample/Design_Trend_Mann_Kendall.htm</a></div>
+</div>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="mkt.test">
+<code class="descclassname">mkt.</code><code class="descname">test</code><span class="sig-paren">(</span><em>t</em>, <em>x</em>, <em>eps=None</em>, <em>alpha=None</em>, <em>Ha=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mkt.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mkt.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the Mann-Kendall test for trend in time series data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> (<em>1D numpy.ndarray</em>) &#8211; array of the time points of measurements</li>
+<li><strong>x</strong> (<em>1D numpy.ndarray</em>) &#8211; array containing the measurements corresponding to entries of &#8216;t&#8217;</li>
+<li><strong>eps</strong> (<em>scalar, float, greater than zero</em>) &#8211; least count error of measurements which help determine ties in the data</li>
+<li><strong>alpha</strong> (<em>scalar, float, greater than zero</em>) &#8211; significance level of the statistical test (Type I error)</li>
+<li><strong>Ha</strong> (<em>string, options include 'up', 'down', 'upordown'</em>) &#8211; type of test: one-sided (&#8216;up&#8217; or &#8216;down&#8217;) or two-sided (&#8216;updown&#8217;)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><strong>MK</strong> (<em>string</em>) &#8211; result of the statistical test indicating whether or not to accept hte
+alternative hypothesis &#8216;Ha&#8217;</li>
+<li><strong>m</strong> (<em>scalar, float</em>) &#8211; slope of the linear fit to the data</li>
+<li><strong>c</strong> (<em>scalar, float</em>) &#8211; intercept of the linear fit to the data</li>
+<li><strong>p</strong> (<em>scalar, float, greater than zero</em>) &#8211; p-value of the obtained Z-score statistic for the Mann-Kendall test</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AssertionError: &#8211; when the least count error of measurements &#8216;eps&#8217; is not given
+when significance level of test &#8216;alpha&#8217; is not given
+when type of alternative hypothesis &#8216;Ha&#8217; is not given</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Bedartha Goswami.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: ''
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
