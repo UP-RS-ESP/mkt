@@ -3,7 +3,7 @@ Examples to help illustrate the module BPL.PY
 =============================================
 
 Created: Mon Apr 17, 2017  01:19PM
-Last modified: Mon Apr 17, 2017  04:46PM
+Last modified: Mon Apr 17, 2017  07:12PM
 Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 """
@@ -34,7 +34,7 @@ def show_examples():
         x = np.round(x, 2)
 
         # get the slope, intercept and pvalues from the mklt module
-        MK, m, c, p = mkt.test(t, x, precx=1E-3, alpha=ALPHA, Ha="upordown")
+        MK, m, c, p = mkt.test(t, x, eps=1E-3, alpha=ALPHA, Ha="upordown")
 
         # plot results
         ax.plot(t, x, "k.-", label="Sampled time series")

@@ -16,9 +16,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+import sphinx_rtd_theme
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -35,7 +36,20 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon',
 ]
+
+# Napoleon settings
+# napoleon_google_docstring = False
+# napoleon_numpy_docstring = True
+# napoleon_include_private_with_doc = False
+# napoleon_include_special_with_doc = True
+# napoleon_use_admonition_for_examples = False
+# napoleon_use_admonition_for_notes = False
+# napoleon_use_admonition_for_references = False
+# napoleon_use_ivar = False
+# napoleon_use_param = True
+# napoleon_use_rtype = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -54,7 +68,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'mkt'
+project = u'Mann-Kendall Test'
 copyright = u'2017, Bedartha Goswami'
 author = u'Bedartha Goswami'
 
@@ -125,16 +139,21 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'collapse_navigation': False,
+    'display_version': False,
+    'navigation_depth': 3,
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
@@ -239,7 +258,7 @@ html_static_path = ['_static']
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'mktdoc'
+htmlhelp_basename = 'MannKendallTestdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -265,7 +284,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'mkt.tex', u'mkt Documentation',
+    (master_doc, 'mkt.tex', u'Mann-Kendall Test Documentation',
      u'Bedartha Goswami', 'manual'),
 ]
 
@@ -301,7 +320,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'mkt', u'mkt Documentation',
+    (master_doc, 'mkt', u'Mann-Kendall Test Documentation',
      [author], 1)
 ]
 
@@ -316,7 +335,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'mkt', u'mkt Documentation',
+    (master_doc, 'mkt', u'Mann-Kendall Test Documentation',
      author, 'mkt', 'One line description of project.',
      'Miscellaneous'),
 ]
