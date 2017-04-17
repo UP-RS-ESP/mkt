@@ -413,21 +413,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># Created: Mon Apr 17, 2017  01:18PM</span>
-<span class="c1"># Last modified: Mon Apr 17, 2017  09:15PM</span>
+<span class="c1"># Last modified: Mon Apr 17, 2017  09:24PM</span>
 <span class="c1"># Copyright: Bedartha Goswami &lt;goswami@uni-potsdam.de&gt;</span>
-
-    <span class="c1"># The p-values are:</span>
-
-    <span class="c1">#     .. math::</span>
-
-    <span class="c1">#         p &amp;= </span>
-    <span class="c1">#             \begin{cases}</span>
-    <span class="c1">#                 \int_{Z_{MK}^{\\infty} f(u) \mathbf{d}u,&amp; E[S] &gt; \varepsilon\\</span>
-    <span class="c1">#                 0.5,  &amp; |E[S]| \leq \varepsilon\\</span>
-    <span class="c1">#                 \int^{Z_{MK}_{-\\infty} f(u) \mathbf{d}u,&amp; E[S] &lt; -\varepsilon\\</span>
-    <span class="c1">#             \end{cases}.</span>
-
-
 
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -466,10 +453,12 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    AssertionError:</span>
-<span class="sd">        when the least count error of measurements &#39;eps&#39; is not given</span>
-<span class="sd">        when significance level of test &#39;alpha&#39; is not given</span>
-<span class="sd">        when type of alternative hypothesis &#39;Ha&#39; is not given</span>
+<span class="sd">    AssertionError : error</span>
+<span class="sd">                    least count error of measurements &#39;eps&#39; is not given</span>
+<span class="sd">    AssertionError : error</span>
+<span class="sd">                    significance level of test &#39;alpha&#39; is not given</span>
+<span class="sd">    AssertionError : error</span>
+<span class="sd">                    alternative hypothesis &#39;Ha&#39; is not given</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># assert a least count for the measurements x</span>
