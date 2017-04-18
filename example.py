@@ -3,7 +3,7 @@ Examples to help illustrate the module BPL.PY
 =============================================
 
 Created: Mon Apr 17, 2017  01:19PM
-Last modified: Mon Apr 17, 2017  07:12PM
+Last modified: Tue Apr 18, 2017  10:48AM
 Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 """
@@ -15,10 +15,10 @@ import mkt
 
 def show_examples():
     """
-    Returns the MK tset results for artificial data.
+    Returns the MK test results for artificial data.
     """
     # create artificial time series with trend
-    n = 100
+    n = 1000
     C = [0.01, 0.001, -0.001, -0.01]
     e = 1.00
     t = np.linspace(0., 500, n)
